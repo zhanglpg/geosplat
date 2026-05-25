@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GeoSplat — 3D Geospatial Gaussian Splatting</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; overflow: hidden; background: #000; }
+    #canvas-container { position: fixed; inset: 0; }
+    canvas { display: block; }
+
+    /* UI Overlay */
+    #ui {
+      position: fixed; top: 16px; left: 16px; z-index: 10;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      color: #fff; pointer-events: none;
+    }
+    #ui > * { pointer-events: auto; }
+
+    #toolbar {
+      display: flex; gap: 8px; margin-bottom: 8px;
+    }
+    #toolbar button {
+      padding: 8px 14px; border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 8px; background: rgba(0,0,0,0.6); color: #fff;
+      font-size: 13px; cursor: pointer; backdrop-filter: blur(12px);
+      transition: background 0.15s;
+    }
+    #toolbar button:hover { background: rgba(255,255,255,0.15); }
+    #toolbar button.active { background: rgba(255,255,255,0.25); border-color: rgba(255,255,255,0.5); }
+
+    #status {
+      padding: 6px 12px; border-radius: 6px;
+      background: rgba(0,0,0,0.5); font-size: 12px;
+      backdrop-filter: blur(8px);
+      display: inline-block; margin-bottom: 4px;
+    }
+
+    #help {
+      position: fixed; bottom: 16px; left: 16px; z-index: 10;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 11px; color: rgba(255,255,255,0.5);
+      background: rgba(0,0,0,0.4); padding: 8px 12px;
+      border-radius: 6px; backdrop-filter: blur(8px);
+      line-height: 1.6;
+    }
+    #help kbd {
+      background: rgba(255,255,255,0.1); padding: 1px 5px;
+      border-radius: 3px; font-size: 10px;
+    }
+
+    #map-container {
+      position: fixed; bottom: 16px; right: 16px; z-index: 10;
+      width: 280px; height: 200px; border-radius: 10px;
+      overflow: hidden; border: 1px solid rgba(255,255,255,0.2);
+      display: none;
+    }
+    #map-container.visible { display: block; }
+    #map-container canvas { border-radius: 10px; }
+
+    /* Drag-and-drop overlay */
+    #drop-overlay {
+      position: fixed; inset: 0; z-index: 100;
+      background: rgba(0,0,0,0.7);
+      display: flex; align-items: center; justify-content: center;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 24px; color: #fff;
+      pointer-events: none; opacity: 0; transition: opacity 0.2s;
+    }
+    #drop-overlay.active { opacity: 1; }
+  </style>
+</head>
+<body>
+  <div id="canvas-container"></div>
+
+  <div id="ui">
+    <div id="toolbar">
+      <button id="btn-open" title="Open .splat file">📂 Open</button>
+      <button id="btn-map" title="Toggle map">🗺 Map</button>
+      <button id="btn-measure" title="Measure distance">📏 Measure</button>
+      <button id="btn-reset" title="Reset view">🔄 Reset</button>
+    </div>
+    <div id="status">Ready — drop a .splat or .ply file</div>
+  </div>
+
+  <div id="map-container">
+    <div id="map-inner" style="width:100%;height:100%"></div>
+  </div>
+
+  <div id="help">
+    <kbd>🖱 Drag</kbd> Orbit &nbsp;
+    <kbd>🖱 Right-drag</kbd> Pan &nbsp;
+    <kbd>Scroll</kbd> Zoom &nbsp;
+    <kbd>W A S D</kbd> Fly &nbsp;
+    <kbd>?</kbd> Help
+  </div>
+
+  <div id="drop-overlay">📂 Drop .splat or .ply file here</div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
